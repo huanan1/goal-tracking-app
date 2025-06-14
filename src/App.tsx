@@ -115,7 +115,7 @@ function App() {
     const goal = allGoals.find(g => g.id === goalId);
     const tasks = loadTasksForGoal(goalId);
     const taskToToggle = tasks.find((task: Task) => task.id === taskId);
-    
+
     if (!taskToToggle || !goal) return;
 
     const isCurrentlyCompleted = isTaskCompletedToday(taskId, goalId);
@@ -133,7 +133,7 @@ function App() {
         return !(task.id === taskId && completedDate.getTime() === today.getTime());
       });
       localStorage.setItem(`completed_tasks_${goalId}`, JSON.stringify(updatedCompletedTasks));
-      
+
       // Note: Removed manual StorageEvent dispatch - browser handles this automatically for other tabs
 
       if (goal.isHabit) {
@@ -158,7 +158,7 @@ function App() {
             streak: updatedStreak
           };
 
-          setAllGoals(prevGoals => 
+          setAllGoals(prevGoals =>
             prevGoals.map(g => g.id === goalId ? updatedGoal : g)
           );
         }
@@ -172,9 +172,9 @@ function App() {
         completedAt: new Date().toISOString()
       };
       const updatedCompletedTasks = [...completedTasks, newCompletedTask];
-      
+
       localStorage.setItem(`completed_tasks_${goalId}`, JSON.stringify(updatedCompletedTasks));
-      
+
       // Note: Removed manual StorageEvent dispatch - browser handles this automatically for other tabs
 
       if (goal.isHabit) {
@@ -182,28 +182,28 @@ function App() {
         const updatedTasks = tasks.filter((task: Task) => task.id !== taskId);
         const resetTask = { ...taskToToggle, completed: false };
         updatedTasks.push(resetTask);
-        
+
         // Save the reordered tasks
         saveTasksForGoal(goalId, updatedTasks);
-        
+
         // Update streak - add today's date if not already present
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        
+
         const currentStreak = goal.streak || [];
         const todayExists = currentStreak.some(date => {
           const streakDate = new Date(date);
           streakDate.setHours(0, 0, 0, 0);
           return streakDate.getTime() === today.getTime();
         });
-        
+
         if (!todayExists) {
           const updatedGoal = {
             ...goal,
             streak: [...currentStreak, today]
           };
-          
-          setAllGoals(prevGoals => 
+
+          setAllGoals(prevGoals =>
             prevGoals.map(g => g.id === goalId ? updatedGoal : g)
           );
         }
@@ -219,7 +219,7 @@ function App() {
   };
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/goal-tracking-app">
       <div className="min-h-screen bg-white">
         <Header />
         <Routes>
